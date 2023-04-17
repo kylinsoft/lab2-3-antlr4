@@ -19,6 +19,16 @@
     ├── case_4.c
     └── case_5.c
 ```
+# 实验环境
+Ubuntu 18.04 LTS及以上
+
+GNU build-essential (gcc,g++,...) 7.5及以上
+
+make 
+
+antlr4 4.9.3 JAR包
+
+antlr4 4.9.3 C++ runtime
 
 # 实验任务
         
