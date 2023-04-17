@@ -83,19 +83,6 @@ antlr4会生成如下的C++代码（头文件):
 
 3. 对于whitespace和注释，直接忽略；
 
-
-# 要求
-
-1. 对于识别出的合法的单词，直接输出：
-
-识别出的单词 : 种别名称  (“:”号前后各留一空格，一个单词占一行）
-
-2. 对于所有的词法错误，应该报告词法错误，例如: '9ab'，'2f'等，应该报告错误，报告格式为：
-
-Lexical error - 行号 : 识别出来的串  (如'9ab', “-”和“:”号前后各留一空格，每报告一个词法错误之后换行)
-
-3. 对于whitespace和注释，直接忽略；
-
 对于以下程序
 ```
 int main(){
@@ -153,7 +140,47 @@ return : RETURN
 } : RC
 ```
 # main.cpp
+````cpp
+#include <iostream>
 
+#include "antlr4-runtime.h"
+#include "SysyLexer.h"
+#include "SysyParser.h"
+#include "main.h"
+
+using namespace antlr4;
+
+int main(int argc, const char* argv[]) {
+    std::ifstream stream;
+    stream.open(argv[1]);
+    ANTLRInputStream input(stream);
+    //ANTLRInputStream input(std::cin);
+    SysyLexer lexer(&input);
+    CommonTokenStream tokens(&lexer);
+
+    tokens.fill();
+   
+    for (auto token : tokens.getTokens()) {
+  
+        //简单粗暴的输出token信息并不符合题目要求
+        //std::cout << token->toString() << std::endl;
+    }
+
+    /* 语法分析
+    SysyParser parser(&tokens);
+    tree::ParseTree* tree = parser.compUnit();
+
+    std::cout << tree->toStringTree(&parser) << std::endl << std::endl;
+    */
+
+    return 0;
+}    
+````
+main.cpp中，token的输出(该输出句语已被注释掉)直接调用了token->toString()，其直接输出token及token的种别编号，这并不符合实验要求，请查阅antlr4的API手册，调用合适的方法，获得所需信息，提示：
+token->getText() - 取得token对应的文本符号串
+token->getLine() - 取得token所在的行号
+token->getType() - 取得token的种别编号,如果token及其词法规则的定义顺序与main.h中tokenTypeName[]数组元素的顺序一致，则tokenTypeName[token->getType()]可获得token名。
+注意，当token的Type值为lexer.LEX_ERR应报词法错误；当Type值为lexer.EOF时，应忽略，不输出。
 
 # SysY语言定义(2022)
 (https://gitlab.eduxiji.net/nscscc/compiler2022/-/blob/master/SysY2022%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89-V1.pdf)
