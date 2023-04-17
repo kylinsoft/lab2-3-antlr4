@@ -187,8 +187,11 @@ int main(int argc, const char* argv[]) {
 }    
 ````
 main.cpp中，token的输出(该输出句语已被注释掉)直接调用了token->toString()，其直接输出token及token的种别编号，这并不符合实验要求，请查阅antlr4的API手册，调用合适的方法，获得所需信息，提示：
+
 token->getText() - 取得token对应的文本符号串
+
 token->getLine() - 取得token所在的行号
+
 token->getType() - 取得token的种别编号,如果token及其词法规则的定义顺序与main.h中tokenTypeName[]数组元素的顺序一致，则tokenTypeName[token->getType()]可获得token名。
 注意，当token的Type值为lexer.LEX_ERR应报词法错误；当Type值为lexer.EOF时，应忽略，不输出。
 
@@ -205,5 +208,30 @@ wget https://www.antlr.org/download/antlr4-cpp-runtime-4.9.3-source.zip
 
 antlr4-cpp-runtime的编译及安装请自行查阅手册。
 
+# 评测方法
+正确补充词法规则，并补充能输出实验要求的C++代码后，可以按以下方法测试程序：
+
+```
+(1) 根据antlr4词法规则，生成c++词法分析程序
+./g4tocpp.sh
+
+如果报没有执行权的错误，可执行chmod +x g4tocpp.sh后再执行
+该脚本实际执行的是：
+antlr4 Sysy.g4 -Dlanguage=Cpp -listener -visitor -o generated/
+其中antlr4是java -cp "/usr/local/lib/antlr-4.9.3-complete.jar:$CLASSPATH" org.antlr.v4.Tool的别称
+执行上述脚本后，generated/文件夹将增加一批.cpp,.h文件。
+(2) 编译c++词法分析程序 
+cd generated
+make 
+正常情况下将生成词法分析程序scanner. 
+注：这个Makefile没有做清理工作，你可以完善它，在必要时make clean清理所有生成的文件。
+(3) 执行词法分析程序，分析测试用例 
+./scanner ../test_cases/case_1.c
+./scanner ../test_cases/case_2.c
+./scanner ../test_cases/case_3.c
+./scanner ../test_cases/case_4.c
+./scanner ../test_cases/case_5.c
+
+```
 
 
